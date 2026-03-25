@@ -1,31 +1,37 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
-
-interface registerprops {
-    username: string
-    email: string
-    password: string
-}
+import { registerService } from '../../services/authServices'
+import type { RegisterData } from '../../types/auth.types'
 
 const RegisterForm = () => {
+    const [redirect, setRedirect] = useState(false)
+    // estado para mostrar contrasenia
+    const [showPassword, setShowPassword] = useState(false)
+
+    const checkSession = () => {
+        console.log('verificando sesion')
+    }
+
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-    } = useForm<registerprops>({
+    } = useForm<RegisterData>({
         mode: 'onChange', // validacion en tiempo real
     })
 
-    const onSubmit = (data: registerprops) => {
+    const onSubmit = (data: RegisterData) => {
         //Registrando al usuario
         console.log(data)
-        reset()
+        registerService({
+            data,
+            reset,
+            setRedirect,
+            checkSession,
+        })
     }
-
-    // estado para mostrar contrasenia
-    const [showPassword, setShowPassword] = useState(false)
 
     return (
         <form
