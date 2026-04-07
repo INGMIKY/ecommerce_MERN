@@ -8,7 +8,17 @@ const API_URL = import.meta.env.VITE_BACKEND_URL + '/auth'
 // Para incluir la cookies en las peticiones
 axios.defaults.withCredentials = true
 
-export const getProfileService = async () => {}
+export const getProfileService = async () => {
+    // obtener el usuario desde el backen dara saber si esta autenticado
+    try {
+        const response = await axios.get(`${API_URL}/profile`)
+        console.log('Response a /profile', response)
+        return response.data
+    } catch (error) {
+        console.log(error)
+        throw new Error('Error al obtener el perfil')
+    }
+}
 export const loginService = async () => {}
 
 export const registerService = async ({
@@ -26,12 +36,21 @@ export const registerService = async ({
         console.log('RESPUESTA', response)
 
         if (response.status === 201 || response.status === 200) {
-            alert('Registro exitoso del usuario')
+            // alert('Registro exitoso del usuario')
+            // Verificar la sesion real del servidor despues del registro
+            await checkSession()
             reset()
+            setRedirect(true)
+
+            return {
+                message: true,
+            }
         }
     } catch (error) {
-        alert('Error al registrarse')
-        console.error(error)
+        console.error('Hubo un probela al resitrarse', error)
+        return {
+            message: false,
+        }
     }
 }
 

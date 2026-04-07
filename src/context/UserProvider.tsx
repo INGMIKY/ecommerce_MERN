@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { UserContext } from './UserContext'
 import type { User } from '../types/user.types'
+import { getProfileService } from '../services/authServices'
 
 interface Props {
     children: React.ReactNode
@@ -14,10 +15,10 @@ export const UserContextProvider = ({ children }: Props) => {
     const checkSession = async () => {
         try {
             setLoading(true)
-            // const userData = await getprofileService() funcion para hacer peticion para verificar el usuario
-            // setUserInfo(userData)
+            const userData = await getProfileService() //funcion para hacer peticion para verificar el usuario
+            setUserInfo(userData)
         } catch (error) {
-            console.log('No hay sesion activga:', error)
+            console.log('No hay sesion activa:', error)
             setUserInfo(null)
         } finally {
             setLoading(false)

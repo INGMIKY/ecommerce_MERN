@@ -4,7 +4,7 @@ import Home from './pages/Home'
 import Register from './pages/Register'
 import Login from './pages/Login'
 import { UserContextProvider } from './context/UserProvider'
-
+import { Toaster } from 'react-hot-toast'
 function App() {
     return (
         <UserContextProvider>
@@ -15,6 +15,7 @@ function App() {
                     <Route path="login" element={<Login />}></Route>
                 </Route>
             </Routes>
+            <Toaster />
         </UserContextProvider>
     )
 }

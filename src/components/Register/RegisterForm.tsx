@@ -1,18 +1,13 @@
 import { useState } from 'react'
+import { useUser } from '../../hooks/userUser'
 import { useForm } from 'react-hook-form'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
 import { registerService } from '../../services/authServices'
 import type { RegisterData } from '../../types/auth.types'
+import { Navigate } from 'react-router'
+import toast from 'react-hot-toast'
 
 const RegisterForm = () => {
-    const [redirect, setRedirect] = useState(false)
-    // estado para mostrar contrasenia
-    const [showPassword, setShowPassword] = useState(false)
-
-    const checkSession = () => {
-        console.log('verificando sesion')
-    }
-
     const {
         register,
         handleSubmit,
@@ -22,15 +17,33 @@ const RegisterForm = () => {
         mode: 'onChange', // validacion en tiempo real
     })
 
-    const onSubmit = (data: RegisterData) => {
+    const { userInfo, checkSession } = useUser()
+    const [showPassword, setShowPassword] = useState(false) // estado para mostrar contrasenia
+    const [redirect, setRedirect] = useState(false)
+
+    const onSubmit = async (data: RegisterData) => {
         //Registrando al usuario
-        console.log(data)
-        registerService({
+        // console.log(data)
+        const result = await registerService({
             data,
             reset,
             setRedirect,
             checkSession,
         })
+
+        if (result?.message) {
+            toast.success('Registro exitoso')
+        } else {
+            toast.error('Error, intente mas tarde')
+        }
+    }
+
+    if (redirect && userInfo?.isAdmin) {
+        // LLlevarlo a la pagina admin
+    }
+
+    if (redirect && !userInfo?.isAdmin) {
+        return <Navigate to={'/'} />
     }
 
     return (
